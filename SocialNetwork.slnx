@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Social.Core/Social.Core.csproj" Id="5e1af102-05f4-438d-9cbe-22a2f1e4d637" />
+  <Project Path="SocialNetwork/SocialNetwork.csproj" Id="47fae43e-f7a3-4b96-bc4e-1ea591b4b4d1" />
+</Solution>

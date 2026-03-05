@@ -1,0 +1,44 @@
+﻿using Social.Core.Entities.Social.Core.Entities;
+using Social.Core.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Social.Core.Entities
+{
+    /// <summary>
+    /// Represents a text post (Tweet) in the platform.
+    /// Implements like/comment/share actions.
+    /// </summary>
+    public class Tweet : BaseEntity, ILikeable, ICommentable, IShareable
+    {
+        public Guid AuthorId { get; set; }
+        public string Content { get; set; }
+        // Like хийсэн хэрэглэгчдийн Id-г хадгална (давхар like хийхээс хамгаална)
+        private readonly HashSet<Guid> _likedUserIds = new HashSet<Guid>();
+        public int LikeCount => _likedUserIds.Count;
+        public List<Comment> Comments { get; } = new List<Comment>();
+        public Tweet(Guid authorId, string content)
+        {
+            AuthorId = authorId;
+            Content = content;
+        }
+
+        public void Like(Guid userId)
+        {
+            _likedUserIds.Add(userId); // HashSet учраас давхар орохгүй
+        }
+
+        public void AddComment(Guid userId, string text)
+        {
+            Comments.Add(new Comment(userId, text));
+        }
+
+        public void Share(Guid userId)
+        {
+            
+        }
+    }
+}
