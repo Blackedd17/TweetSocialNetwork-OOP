@@ -11,11 +11,13 @@ namespace Social.Core.Entities
         public string Username { get; set; }
         public string DisplayName { get; set; }
         public byte Age { get; }
-        public User(string username, string displayName, byte age)
+        public string PasswordHash { get; }
+        public User(string username, string displayName, byte age, string passwordHash)
         {
             Username = username;
             DisplayName = displayName;
             Age = age;
+            PasswordHash = passwordHash;
         }
     }
 }

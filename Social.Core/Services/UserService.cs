@@ -24,5 +24,6 @@ namespace Social.Core.Services
         {
             return userRepository.GetAll();
         }
+
     }
 }
