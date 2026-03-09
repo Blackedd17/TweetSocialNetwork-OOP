@@ -10,5 +10,6 @@ namespace Social.Core.Repositories
     {
         void Add(T item);
         List<T> GetAll();
+        void Remove(T item);
     }
 }

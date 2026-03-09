@@ -17,5 +17,9 @@ namespace Social.Core.Repositories
         {
             return items;
         }
+        public void Remove(T item)
+        {
+            items.Remove(item);
+        }
     }
 }

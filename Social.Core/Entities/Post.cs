@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Social.Core.Entities
 {
-    public class Post : BaseEntity, ILikeable, ICommentable, IShareable
+    public abstract class Post : BaseEntity, ILikeable, ICommentable, IShareable
     {
         public Guid AuthorId { get; set; }
         public string Content { get; set; }

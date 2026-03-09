@@ -12,6 +12,8 @@ namespace Social.Core.Entities
         public string DisplayName { get; set; }
         public byte Age { get; }
         public string PasswordHash { get; }
+        public string Bio { get; set; }
+        public List<Guid> Followers { get; } = new List<Guid>();
         public List<Guid> Following { get; } = new List<Guid>();
         public User(string username, string displayName, byte age, string passwordHash)
         {

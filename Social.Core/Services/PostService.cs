@@ -23,11 +23,20 @@ namespace Social.Core.Services
         {
             return postRepository.GetAll();
         }
+        public void DeletePost(Post post)
+        {
+            postRepository.Remove(post);
+        }
         public List<Post> GetPostsByAuthor(Guid authorId)
         {
             return postRepository.GetAll()
                 .Where(t => t.AuthorId == authorId)
                 .ToList();
+        }
+        public bool IsFollowing(User follower, User target)
+        {
+            if (follower == null || target == null) return false;
+            return follower.Following.Contains(target.Id);
         }
     }
 }
