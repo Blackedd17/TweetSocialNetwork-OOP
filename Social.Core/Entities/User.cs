@@ -12,6 +12,7 @@ namespace Social.Core.Entities
         public string DisplayName { get; set; }
         public byte Age { get; }
         public string PasswordHash { get; }
+        public List<Guid> Following { get; } = new List<Guid>();
         public User(string username, string displayName, byte age, string passwordHash)
         {
             Username = username;

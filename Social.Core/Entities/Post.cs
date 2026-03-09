@@ -8,11 +8,7 @@ using System.Threading.Tasks;
 
 namespace Social.Core.Entities
 {
-    /// <summary>
-    /// Represents a text post (Tweet) in the platform.
-    /// Implements like/comment/share actions.
-    /// </summary>
-    public class Tweet : BaseEntity, ILikeable, ICommentable, IShareable
+    public class Post : BaseEntity, ILikeable, ICommentable, IShareable
     {
         public Guid AuthorId { get; set; }
         public string Content { get; set; }
@@ -20,7 +16,7 @@ namespace Social.Core.Entities
         private readonly HashSet<Guid> _likedUserIds = new HashSet<Guid>();
         public int LikeCount => _likedUserIds.Count;
         public List<Comment> Comments { get; } = new List<Comment>();
-        public Tweet(Guid authorId, string content)
+        public Post(Guid authorId, string content)
         {
             AuthorId = authorId;
             Content = content;

@@ -24,6 +24,13 @@ namespace Social.Core.Services
         {
             return userRepository.GetAll();
         }
+        public void Follow(User follower, User target)
+        {
+            if (!follower.Following.Contains(target.Id))
+            {
+                follower.Following.Add(target.Id);
+            }
+        }
 
     }
 }

@@ -43,7 +43,7 @@
   <ItemGroup>
     <Compile Include="Entities\BaseEntity.cs" />
     <Compile Include="Entities\Comment.cs" />
-    <Compile Include="Entities\Tweets.cs" />
+    <Compile Include="Entities\Post.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Interfaces\ICommentable.cs" />
     <Compile Include="Interfaces\ILikeable.cs" />
@@ -53,7 +53,7 @@
     <Compile Include="Repositories\IReposity.cs" />
     <Compile Include="Services\AutoService.cs" />
     <Compile Include="Services\PasswordHasher.cs" />
-    <Compile Include="Services\TweetService.cs" />
+    <Compile Include="Services\PostService.cs" />
     <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <ItemGroup />
