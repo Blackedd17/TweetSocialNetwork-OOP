@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Social.Core.Entities
 {
@@ -21,6 +18,22 @@ namespace Social.Core.Entities
             DisplayName = displayName;
             Age = age;
             PasswordHash = passwordHash;
+        }
+
+        public void Follow(Guid userId)
+        {
+            if (!Following.Contains(userId))
+            {
+                Following.Add(userId);
+            }
+        }
+
+        public void Unfollow(Guid userId)
+        {
+            if (Following.Contains(userId))
+            {
+                Following.Remove(userId);
+            }
         }
     }
 }

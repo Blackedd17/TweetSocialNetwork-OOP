@@ -1,6 +1,8 @@
-﻿using System;
-using Social.Core.Entities;
+﻿using Social.Core.Entities;
 using Social.Core.Repositories;
+using System;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Social.Core.Services
 {
@@ -19,7 +21,7 @@ namespace Social.Core.Services
             if (existing != null)
                 throw new InvalidOperationException("Username already exists.");
 
-            string hash = PasswordHasher.Hash(password);
+            string hash = PasswordHash(password);
 
             var user = new User(username, displayName, age, hash);
             userRepository.Add(user);
@@ -30,7 +32,7 @@ namespace Social.Core.Services
             var user = FindByUsername(username);
             if (user == null) return null;
 
-            string hash = PasswordHasher.Hash(password);
+            string hash = PasswordHash(password);
             if (user.PasswordHash != hash) return null;
 
             return user;
@@ -43,6 +45,22 @@ namespace Social.Core.Services
                     return u;
             }
             return null;
+        }
+        public static string PasswordHash(string password)
+        {
+            if (password == null) password = "";
+            using (var sha = SHA256.Create())
+            {
+                byte[] bytes = Encoding.UTF8.GetBytes(password);
+                byte[] hashBytes = sha.ComputeHash(bytes);
+
+                var sb = new StringBuilder();
+                for (int i = 0; i < hashBytes.Length; i++)
+                {
+                    sb.Append(hashBytes[i].ToString("x2"));
+                }
+                return sb.ToString();
+            }
         }
     }
 }
