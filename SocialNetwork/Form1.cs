@@ -1,5 +1,4 @@
 ﻿using Social.Core.Entities;
-using Social.Core.Entities.Social.Core.Entities;
 using Social.Core.Repositories;
 using Social.Core.Services;
 using System;
@@ -7,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Social.Infrastructure.Repositories;
 
 namespace TweetingPlatform
 {
@@ -24,12 +24,12 @@ namespace TweetingPlatform
         /// <summary>
         /// Хэрэглэгчийн мэдээллийг санах in-memory repository.
         /// </summary>
-        private InMemoryRepository<User> userRepo = new InMemoryRepository<User>();
+        private IRepository<User> userRepo = new InMemoryRepository<User>();
 
         /// <summary>
         /// Постуудын мэдээллийг санах in-memory repository.
         /// </summary>
-        private InMemoryRepository<Post> postRepo = new InMemoryRepository<Post>();
+        private IRepository<Post> postRepo = new InMemoryRepository<Post>();
 
         /// <summary>
         /// Story-нуудыг хадгалах жагсаалт.
@@ -325,7 +325,7 @@ namespace TweetingPlatform
 
                 if (!string.IsNullOrWhiteSpace(commentText))
                 {
-                    post.Comments.Add(new Comment(currentUser.Id, commentText));
+                    post.Comments.Add(new Comment(post.Id, currentUser.Id, commentText));
                     LoadFeed();
                 }
             };

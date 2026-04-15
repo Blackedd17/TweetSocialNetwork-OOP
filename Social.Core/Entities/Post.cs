@@ -1,5 +1,4 @@
-﻿using Social.Core.Entities.Social.Core.Entities;
-using Social.Core.Interfaces;
+﻿using Social.Core.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -26,7 +25,7 @@ namespace Social.Core.Entities
 
         public void AddComment(Guid userId, string text)
         {
-            Comments.Add(new Comment(userId, text));
+            Comments.Add(new Comment(this.Id, userId, text));
         }
 
         public void Share(Guid userId)

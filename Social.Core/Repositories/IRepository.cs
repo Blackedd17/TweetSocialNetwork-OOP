@@ -5,8 +5,9 @@ namespace Social.Core.Repositories
 {
     public interface IRepository<T>
     {
-        void Add(T item);
+        void Add(T entity);
+        void Delete(Guid id);
         List<T> GetAll();
-        void Remove(T item);
+        T GetById(Guid id);
     }
 }

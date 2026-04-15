@@ -2,8 +2,26 @@
 
 namespace TweetingPlatform.Helpers
 {
+    /// <summary>
+    /// Console дээр ажиллах нэмэлт туслах (helper) функцуудыг агуулсан class.
+    /// 
+    /// Энэ class нь:
+    /// - Хэрэглэгчээс нууц үгийг аюулгүйгээр (масклан) унших боломж олгоно
+    /// 
+    /// Password оруулах үед тэмдэгтүүдийг '*' болгон харуулж,
+    /// жинхэнэ утгыг нууцалдаг.
+    /// </summary>
     public class ConsoleHelper
     {
+        /// <summary>
+        /// Console-оос нууц үгийг масклан (*** хэлбэрээр) уншина.
+        /// 
+        /// Хэрэглэгч:
+        /// - Тэмдэгт оруулах үед '*' харагдана
+        /// - Backspace дарж засвар хийж болно
+        /// - Enter дарж оруулалтыг дуусгана
+        /// </summary>
+        /// <returns>Оруулсан нууц үг (string)</returns>
         public static string ReadPassword()
         {
             string password = "";
