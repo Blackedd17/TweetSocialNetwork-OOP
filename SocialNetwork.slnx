@@ -1,5 +1,15 @@
 <Solution>
-  <Project Path="Social.Core/Social.Core.csproj" Id="5e1af102-05f4-438d-9cbe-22a2f1e4d637" />
-  <Project Path="Social.InfrastructureNew/Social.Infrastructure.csproj" Id="520e4597-d56a-4c68-8a1a-3c1f6bb72eb8" />
-  <Project Path="SocialNetwork/TweetingPlatform.csproj" Id="47fae43e-f7a3-4b96-bc4e-1ea591b4b4d1" />
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="Social.Core/Social.Core.csproj" Id="5e1af102-05f4-438d-9cbe-22a2f1e4d637">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="Social.Infrastructure/Social.Infrastructure.csproj" Id="62cab32e-2755-4231-a908-d3da460fdfce">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
+  <Project Path="SocialNetwork/TweetingPlatform.csproj" Id="47fae43e-f7a3-4b96-bc4e-1ea591b4b4d1">
+    <Platform Solution="*|x64" Project="x64" />
+  </Project>
 </Solution>

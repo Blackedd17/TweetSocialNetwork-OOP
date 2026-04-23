@@ -1,55 +1,69 @@
 ﻿using Social.Core.Entities;
 using Social.Core.Repositories;
 using Social.Core.Services;
-using TweetingPlatform.Helpers;
+using Social.Infrastructure.Data;
+using Social.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using TweetingPlatform.Helpers;
 
 namespace TweetingPlatform
 {
     /// <summary>
-    /// Програмын эхлэх үндсэн class.
+    /// Програмын үндсэн entry point.
+    /// 
     /// Энэ class нь:
-    /// - WinForms demo UI
-    /// - Console social networking menu
-    /// хоёрыг ажиллуулж болно.
+    /// - SQLite database initialize хийх
+    /// - Repository, Service layer-ийг үүсгэх
+    /// - WinForms UI болон Console UI-г ажиллуулах
     /// </summary>
     internal class Program
     {
         /// <summary>
         /// Main method нь програмын эхлэх цэг.
-        /// Эхлээд Form1 нээгдэнэ.
-        /// Form хаагдсаны дараа console menu ажиллана.
+        /// Эхлээд WinForms UI ажиллана.
+        /// Дараа нь Console menu ажиллана.
         /// </summary>
         [STAThread]
         static void Main()
         {
-            // ===== WINFORMS UI ЭХЛҮҮЛЭХ =====
+            SQLitePCL.Batteries.Init();
+            /// <summary>
+            /// SQLite database initialize
+            /// </summary>
+            var db = new SqliteDbContext();
+            db.ResetDatabase();
+
+            /// <summary>
+            /// Repository layer
+            /// </summary>
+            IRepository<User> userRepo = new SQLiteUserRepository(db);
+            IPostRepository postRepo = new SQLitePostRepository(db);
+            ICommentRepository commentRepo = new SQLiteCommentRepository(db);
+            IReactionRepository reactionRepo = new SQLiteReactionRepository(db);
+
+            /// <summary>
+            /// Service layer
+            /// </summary>
+            AuthService authService = new AuthService(userRepo);
+            UserService userService = new UserService(userRepo);
+            PostService postService = new PostService(postRepo);
+
+            // ===== WINFORMS UI =====
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new Form1());
 
-            // ===== CONSOLE APP-Д АШИГЛАХ REPOSITORY, SERVICE-ҮҮД =====
-            var userRepo = new InMemoryRepository<User>();
-            var postRepo = new InMemoryRepository<Post>();
-
-            var authService = new AuthService(userRepo);
-            var userService = new UserService(userRepo);
-            var postService = new PostService(postRepo);
-
             /// <summary>
-            /// Одоогоор нэвтэрсэн хэрэглэгч.
-            /// null байвал хэрэглэгч нэвтрээгүй гэсэн үг.
+            /// Одоогийн нэвтэрсэн хэрэглэгч
             /// </summary>
             User currentUser = null;
 
-            // Програмын үндсэн давталт
+            // ===== CONSOLE LOOP =====
             while (true)
             {
-                // =========================================================
-                // 1) AUTH MENU — хэрэглэгч нэвтрээгүй үед ажиллана
-                // =========================================================
+                // ================= AUTH MENU =================
                 while (currentUser == null)
                 {
                     Console.WriteLine("\n==== AUTH MENU ====");
@@ -79,9 +93,7 @@ namespace TweetingPlatform
                     }
                 }
 
-                // =========================================================
-                // 2) MAIN MENU — хэрэглэгч нэвтэрсний дараа ажиллана
-                // =========================================================
+                // ================= MAIN MENU =================
                 Console.WriteLine("\n==== MAIN MENU ====");
                 Console.WriteLine("1. Create Tweet");
                 Console.WriteLine("2. Show All Tweets");
@@ -133,8 +145,7 @@ namespace TweetingPlatform
         }
 
         /// <summary>
-        /// Шинэ хэрэглэгч бүртгэх method.
-        /// Username, display name, age, password авна.
+        /// Шинэ хэрэглэгч бүртгэнэ.
         /// </summary>
         private static void RegisterUser(AuthService authService)
         {
@@ -166,32 +177,36 @@ namespace TweetingPlatform
         }
 
         /// <summary>
-        /// Хэрэглэгчийг username, password ашиглан нэвтрүүлнэ.
-        /// Амжилттай бол User object буцаана.
+        /// Login хийх.
         /// </summary>
         private static User LoginUser(AuthService authService, UserService userService, PostService postService)
         {
             Console.Write("Username: ");
-            var loginUser = Console.ReadLine();
+            var username = Console.ReadLine();
 
             Console.Write("Password: ");
-            var loginPass = ConsoleHelper.ReadPassword();
+            var password = ConsoleHelper.ReadPassword();
 
-            var loggedIn = authService.Login(loginUser, loginPass);
-            if (loggedIn == null)
+            var user = authService.Login(username, password);
+
+            if (user == null)
             {
                 Console.WriteLine("Login failed.");
                 return null;
             }
 
-            Console.WriteLine("Logged in as: " + loggedIn.Username);
-            PostViewer.ShowFeed(loggedIn, userService, postService);
+            Console.WriteLine("Logged in as: " + user.Username);
 
-            return loggedIn;
+            /// <summary>
+            /// Feed харуулах
+            /// </summary>
+            PostViewer.ShowFeed(user, userService, postService);
+
+            return user;
         }
 
         /// <summary>
-        /// Одоогийн хэрэглэгч шинэ пост үүсгэнэ.
+        /// Post үүсгэнэ.
         /// </summary>
         private static void CreatePost(User currentUser, PostService postService)
         {
@@ -205,73 +220,68 @@ namespace TweetingPlatform
         }
 
         /// <summary>
-        /// Хэрэглэгч username эсвэл display name-ээр бусад хэрэглэгч хайна.
-        /// Олдсон хэрэглэгчдийн profile-ийг нээх боломжтой.
+        /// Хэрэглэгч хайх.
         /// </summary>
         private static void SearchUsers(User currentUser, UserService userService, PostService postService)
         {
-            Console.Write("Search username/display name: ");
+            Console.Write("Search: ");
             var keyword = Console.ReadLine();
 
-            var foundUsers = userService.SearchUsers(keyword);
+            var users = userService.SearchUsers(keyword);
 
-            if (foundUsers.Count == 0)
+            if (users.Count == 0)
             {
                 Console.WriteLine("No users found.");
                 return;
             }
 
-            ProfileViewer.OpenUserList(foundUsers, currentUser, userService, postService);
+            ProfileViewer.OpenUserList(users, currentUser, userService, postService);
         }
 
         /// <summary>
-        /// Одоогийн хэрэглэгчийн following жагсаалтыг харуулна.
+        /// Following list харуулах.
         /// </summary>
         private static void ViewFollowing(User currentUser, UserService userService, PostService postService)
         {
-            var followingUsers = new List<User>();
+            var list = new List<User>();
 
             foreach (var id in currentUser.Following)
             {
                 var user = userService.GetById(id);
                 if (user != null)
-                {
-                    followingUsers.Add(user);
-                }
+                    list.Add(user);
             }
 
-            if (followingUsers.Count == 0)
+            if (list.Count == 0)
             {
-                Console.WriteLine("You are not following anyone.");
+                Console.WriteLine("No following users.");
                 return;
             }
 
-            ProfileViewer.OpenUserList(followingUsers, currentUser, userService, postService);
+            ProfileViewer.OpenUserList(list, currentUser, userService, postService);
         }
 
         /// <summary>
-        /// Одоогийн хэрэглэгчийн follower жагсаалтыг харуулна.
+        /// Followers list харуулах.
         /// </summary>
         private static void ViewFollowers(User currentUser, UserService userService, PostService postService)
         {
-            var followerUsers = new List<User>();
+            var list = new List<User>();
 
             foreach (var id in currentUser.Followers)
             {
                 var user = userService.GetById(id);
                 if (user != null)
-                {
-                    followerUsers.Add(user);
-                }
+                    list.Add(user);
             }
 
-            if (followerUsers.Count == 0)
+            if (list.Count == 0)
             {
-                Console.WriteLine("No followers yet.");
+                Console.WriteLine("No followers.");
                 return;
             }
 
-            ProfileViewer.OpenUserList(followerUsers, currentUser, userService, postService);
+            ProfileViewer.OpenUserList(list, currentUser, userService, postService);
         }
     }
 }

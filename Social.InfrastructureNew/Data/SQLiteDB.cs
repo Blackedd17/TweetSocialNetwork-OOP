@@ -62,10 +62,11 @@ namespace Social.Infrastructure.Data
                 CreatedAt TEXT
             );
 
-            CREATE TABLE IF NOT EXISTS Likes (
+            CREATE TABLE IF NOT EXISTS Reactions (
                 Id TEXT PRIMARY KEY,
                 PostId TEXT,
-                UserId TEXT
+                UserId TEXT,
+                Type TEXT
             );
 
             CREATE TABLE IF NOT EXISTS Comments (

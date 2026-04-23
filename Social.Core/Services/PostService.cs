@@ -21,13 +21,13 @@ namespace Social.Core.Services
     /// </summary>
     public class PostService
     {
-        private readonly IRepository<Post> postRepository;
+        private readonly IPostRepository postRepository;
 
         /// <summary>
         /// PostService-ийг repository-тэй холбож үүсгэнэ.
         /// </summary>
         /// <param name="postRepository">Post хадгалах repository</param>
-        public PostService(IRepository<Post> postRepository)
+        public PostService(IPostRepository postRepository)
         {
             this.postRepository = postRepository;
         }
